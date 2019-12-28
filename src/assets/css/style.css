@@ -9416,7 +9416,8 @@ input[type="button"].btn-block {
   margin-right: -1px; }
 
 .input-group-append {
-  margin-left: -1px; }
+  margin-left: -1px;
+  padding-bottom: 6px; }
 
 .input-group-text {
   display: flex;

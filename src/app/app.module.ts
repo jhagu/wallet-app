@@ -1,17 +1,27 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
+import { FormsModule } from '@angular/forms';
+
+//  Firebase
+import {AngularFireModule} from '@angular/fire';
+import {AngularFirestoreModule} from '@angular/fire/firestore';
+import {AngularFireAuthModule} from '@angular/fire/auth';
+
+//  Environments
+
+import {environment} from '../environments/environment';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { LoginComponent } from './auth/login/login.component';
-import { RegisterComponent } from './auth/register/register.component';
-import { DashboardComponent } from './dashboard/dashboard.component';
-import { WalletComponent } from './wallet/wallet.component';
-import { StatsComponent } from './wallet/stats/stats.component';
-import { DetailComponent } from './wallet/detail/detail.component';
-import { FooterComponent } from './shared/footer/footer.component';
-import { NavbarComponent } from './shared/navbar/navbar.component';
-import { SidebarComponent } from './shared/sidebar/sidebar.component';
+import { LoginComponent } from './components/login/login.component';
+import { RegisterComponent } from './components/register/register.component';
+import { DashboardComponent } from './components/dashboard/dashboard.component';
+import { WalletComponent } from './components/wallet/wallet.component';
+import { StatsComponent } from './components/wallet/stats/stats.component';
+import { DetailComponent } from './components/wallet/detail/detail.component';
+import { FooterComponent } from './components/shared/footer/footer.component';
+import { NavbarComponent } from './components/shared/navbar/navbar.component';
+import { SidebarComponent } from './components/shared/sidebar/sidebar.component';
 
 @NgModule({
   declarations: [
@@ -28,7 +38,11 @@ import { SidebarComponent } from './shared/sidebar/sidebar.component';
   ],
   imports: [
     BrowserModule,
-    AppRoutingModule
+    AppRoutingModule,
+    FormsModule,
+    AngularFireModule.initializeApp(environment.firebase),
+    AngularFirestoreModule,
+    AngularFireAuthModule
   ],
   providers: [],
   bootstrap: [AppComponent]
