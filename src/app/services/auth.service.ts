@@ -1,15 +1,21 @@
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import {map} from 'rxjs/operators';
-import { Observable } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
 
 import { AngularFireAuth } from '@angular/fire/auth';
 import { AngularFirestore } from '@angular/fire/firestore';
 import * as firebase from 'firebase';
 
+import { Store } from '@ngrx/store';
+import { AppState } from '../app.reducer';
+
 import Swal from 'sweetalert2';
 
 import { User } from '../models/user.model';
+import * as fromUIActions from '../root-store/ui/ui.actions';
+import * as fromAuthActions from '../root-store/auth/auth.actions';
+
 
 
 @Injectable({
@@ -17,10 +23,15 @@ import { User } from '../models/user.model';
 })
 export class AuthService {
 
+  // The subscription initialization handles undefined values when someone try to access to
+  // the dashboard in non secure way
+  private userSubscription: Subscription = new Subscription();
+
   constructor(
     private afAuth: AngularFireAuth,
     private router: Router,
-    private afDB: AngularFirestore) { }
+    private afDB: AngularFirestore,
+    private store: Store<AppState>) { }
 
 
   /**
@@ -28,9 +39,21 @@ export class AuthService {
    */
   initAuthListener() {
     this.afAuth.authState.subscribe( (fbUser: firebase.User) => {
+      if (fbUser) { //  If the user exists in firebase auth table...
+        //  Go to obtain th e user obejct in firestore db via the fbUser.uid
+        this.userSubscription = this.afDB.doc(`${fbUser.uid}/user`).valueChanges().subscribe((dbLoguedUser: any) => {
+          const loguedUser = new User(dbLoguedUser);
+          this.store.dispatch(new fromAuthActions.SetLoguedUserAction(loguedUser));
+        });
+      } else {
+        this.userSubscription.unsubscribe();
+      }
     });
   }
   createUser(name: string, email: string, password: string) {
+    //  Dispatch ACTIVATE_LOADING action
+    this.store.dispatch(new fromUIActions.ActivateLoadingAction());
+
     this.afAuth.auth
       .createUserWithEmailAndPassword(email, password)
       .then(res => {
@@ -50,24 +73,29 @@ export class AuthService {
          * Creating the entry in the firebase db table...
          */
         this.afDB
-          .doc(`${user.uid}/usuario`)
+          .doc(`${user.uid}/user`)
           .set( user )
           .then(() => {
             this.router.navigate(['/']);
+            this.store.dispatch(new fromUIActions.DeactivateLoadingAction());
           });
       })
       .catch(err => {
+        this.store.dispatch(new fromUIActions.DeactivateLoadingAction());
         Swal.fire('Register Error', err.message, 'error');
       });
   }
 
   login(email: string, password: string) {
+    this.store.dispatch(new fromUIActions.ActivateLoadingAction());
     this.afAuth.auth
       .signInWithEmailAndPassword(email, password)
       .then(userCredential => {
+        this.store.dispatch(new fromUIActions.DeactivateLoadingAction());
         this.router.navigate(['/']);
       })
       .catch(err => {
+        this.store.dispatch(new fromUIActions.DeactivateLoadingAction());
         Swal.fire('Login Error', err.message, 'error');
       });
   }
