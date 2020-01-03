@@ -6,14 +6,14 @@
         <p class="card-description">
           Specify the amount and type
         </p>
-        <form>
+        <form (ngSubmit)="createWalletItem()" [formGroup]="walletForm">
           <div class="form-group">
             <label>Description</label>
-            <input type="text" class="form-control" placeholder="Description" name="descripcion">
+            <input type="text" class="form-control" placeholder="Description" name="description" formControlName="description">
           </div>
           <div class="form-group">
             <label>Amount</label>
-            <input type="number" class="form-control" placeholder="Amount" name="monto">
+            <input type="number" class="form-control" placeholder="Amount" name="amount" formControlName="amount">
             <p>
               It must be a positive amount
             </p>
@@ -21,20 +21,19 @@
           <div class="form-group">
             <label>Type</label>
             <br>
-            <button type="button" class="btn btn-primary btn-block">Incoming</button>
-            <button type="button" class="btn btn-warning btn-block">Expense</button>
+            <button (click)="itemType = 'Expense'" *ngIf="itemType === 'Incoming'" type="button" class="btn btn-primary btn-block">Incoming</button>
+            <button (click)="itemType = 'Incoming'" *ngIf="itemType === 'Expense'" type="button" class="btn btn-warning btn-block">Expense</button>
           </div>
           <hr>
-          <button type="button" class="btn btn-success mr-2">
+          <button *ngIf="!isLoading" [disabled]="walletForm.invalid" type="submit" class="btn btn-success mr-2">
             <i class="fa fa-save"></i>
             Add
           </button>
-          <!-- 
-                <button disabled class="btn btn-success mr-2">
-                  <i class="fa fa-spin fa-sync"></i>
-                  Espere por favor...
-                </button> 
-              -->
+          <button disabled *ngIf="isLoading" class="btn btn-success mr-2">
+            <i class="fa fa-spinner fa-spin"></i>
+            Wait please...
+          </button> 
+             
           <button type="reset" class="btn btn-light">Cancel</button>
         </form>
       </div>

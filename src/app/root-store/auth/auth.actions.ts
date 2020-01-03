@@ -1,8 +1,9 @@
 import {Action} from '@ngrx/store';
-import { User } from 'src/app/models/user.model';
+import { User } from '../../models/user.model';
 
 export enum AuthActionsType {
-  SET_LOGUED_USER = '[AUTH] SET LOGUED USER'
+  SET_LOGUED_USER = '[AUTH] SET LOGUED USER',
+  UNSET_USER = '[AUTH] UNSET USER'
 }
 
 export class SetLoguedUserAction implements Action {
@@ -10,4 +11,8 @@ export class SetLoguedUserAction implements Action {
   constructor(public user: User) {}
 }
 
-export type AuthActions = SetLoguedUserAction;
+export class UnsetUser implements Action {
+  readonly type = AuthActionsType.UNSET_USER;
+}
+
+export type AuthActions = SetLoguedUserAction | UnsetUser;

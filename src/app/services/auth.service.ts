@@ -26,6 +26,7 @@ export class AuthService {
   // The subscription initialization handles undefined values when someone try to access to
   // the dashboard in non secure way
   private userSubscription: Subscription = new Subscription();
+  private currentUser: User = null;
 
   constructor(
     private afAuth: AngularFireAuth,
@@ -44,8 +45,10 @@ export class AuthService {
         this.userSubscription = this.afDB.doc(`${fbUser.uid}/user`).valueChanges().subscribe((dbLoguedUser: any) => {
           const loguedUser = new User(dbLoguedUser);
           this.store.dispatch(new fromAuthActions.SetLoguedUserAction(loguedUser));
+          this.currentUser = loguedUser;
         });
       } else {
+        this.currentUser = null;
         this.userSubscription.unsubscribe();
       }
     });
@@ -103,6 +106,7 @@ export class AuthService {
   logout() {
     this.router.navigate(['/login']);
     this.afAuth.auth.signOut();
+    this.store.dispatch(new fromAuthActions.UnsetUser());
   }
 
   /**
@@ -119,5 +123,9 @@ export class AuthService {
         return fbUser !== null;
       })
     );
+  }
+
+  getCurrentUser() {
+    return { ...this.currentUser };
   }
 }

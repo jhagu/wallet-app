@@ -1,6 +1,9 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+
+// Charts
+import { ChartsModule } from 'ng2-charts';
 
 //  Firebase
 import {AngularFireModule} from '@angular/fire';
@@ -25,6 +28,7 @@ import { DetailComponent } from './components/wallet/detail/detail.component';
 import { FooterComponent } from './components/shared/footer/footer.component';
 import { NavbarComponent } from './components/shared/navbar/navbar.component';
 import { SidebarComponent } from './components/shared/sidebar/sidebar.component';
+import { WalletOrderPipe } from './shared/pipes/wallet-order.pipe';
 
 
 @NgModule({
@@ -38,12 +42,14 @@ import { SidebarComponent } from './components/shared/sidebar/sidebar.component'
     DetailComponent,
     FooterComponent,
     NavbarComponent,
-    SidebarComponent
+    SidebarComponent,
+    WalletOrderPipe
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     FormsModule,
+    ReactiveFormsModule,
     AngularFireModule.initializeApp(environment.firebase),
     AngularFirestoreModule,
     AngularFireAuthModule,
@@ -51,7 +57,8 @@ import { SidebarComponent } from './components/shared/sidebar/sidebar.component'
     StoreDevtoolsModule.instrument({
       maxAge: 10,
       logOnly: environment.production
-    })
+    }),
+    ChartsModule
   ],
   providers: [],
   bootstrap: [AppComponent]
