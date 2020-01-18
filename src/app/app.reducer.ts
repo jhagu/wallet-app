@@ -4,7 +4,7 @@ import * as fromAuthReducer from './root-store/auth/auth.reducer';
 import * as fromWalletReducer from './root-store/wallet/wallet.reducer';
 
 export interface AppState {
-  ui: fromUIReducer.State;
+  ui: fromUIReducer.UIState;
   auth: fromAuthReducer.AuthState;
   wallet: fromWalletReducer.WalletState;
 }

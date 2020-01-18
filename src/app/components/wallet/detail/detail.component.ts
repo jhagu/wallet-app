@@ -1,5 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Store } from '@ngrx/store';
+//  import { AppState } from '../../../root-store/index';
 import { AppState } from '../../../app.reducer';
 import { WalletItem } from '../../../models/walletItem.model';
 import { Subscription } from 'rxjs';
